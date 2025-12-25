@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _navigateToLoginPage() {
-    Timer(Duration(seconds: 4), () {
+    Timer(Duration(seconds: 10), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -76,11 +76,12 @@ class _SplashScreenState extends State<SplashScreen>
             FadeTransition(
               opacity: _textAnimation,
               child: Text(
-                'Welcome to Flutter Riddles', // App title
+                'Think | Guess | Win', // App title
                 style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
+                  fontSize: 26,
+                  color: Colors.white.withOpacity(0.7),
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'EmilysCandy-Regular', 
                 ),
               ),
             ),

@@ -56,9 +56,10 @@ class _IntroScreenState extends State<IntroScreen>
           child: Text(
             'Hi there! I\'m Nazmul', // The initial message
             style: TextStyle(
-              fontSize: 28,
-              color: Colors.white,
+              fontSize: 32,
+              color: Colors.white10.withOpacity(0.8),
               fontWeight: FontWeight.bold,
+              fontFamily: 'EmilysCandy-Regular', 
             ),
           ),
         ),
