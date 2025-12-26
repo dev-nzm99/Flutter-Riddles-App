@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Set IntroScreen as the first screen
-      home: IntroScreen(),
+      home: SplashScreen(),
       routes: {
         // Define the route for HomePage after login or splash
         '/splash_screen': (context) => SplashScreen(),

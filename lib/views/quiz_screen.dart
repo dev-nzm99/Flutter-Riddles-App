@@ -119,7 +119,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   ],
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 10, 
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 14, bottom: 10),
