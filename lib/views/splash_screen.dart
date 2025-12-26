@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _navigateToLoginPage() {
-    Timer(const Duration(seconds: 10), () {
+    Timer(const Duration(seconds: 3), () {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,

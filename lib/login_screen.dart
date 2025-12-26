@@ -2,14 +2,6 @@ import 'package:flashcards_quiz/views/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// Single-file auth demo:
-/// - Sign up: saves email+password
-/// - Login: checks email+password
-/// - Persists logged-in state across app restarts
-/// - Uses your provided UI layout/design
-///
-/// IMPORTANT: For real apps, do NOT store raw passwords.
-/// This is for offline demo/learning only.
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -176,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/LogIn_dp.jpg'),
+                image: AssetImage('assets/login_screen_dp.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -189,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
               alignment: Alignment.center,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withOpacity(0.13),
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: const [
                     BoxShadow(
@@ -218,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue[800],
+                          color: Colors.white.withOpacity(0.8)
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -298,7 +290,8 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: _isLoginMode ? _forgotPassword : null,
                         child: Text(
                           'Forgot Password?',
-                          style: TextStyle(color: Colors.blue[800]),
+                          style:
+                              TextStyle(color: Colors.white.withOpacity(0.8)),
                         ),
                       ),
                     ),
@@ -338,7 +331,8 @@ class _LoginPageState extends State<LoginPage> {
                           _isLoginMode
                               ? 'Don\'t have an account? '
                               : 'Already have an account? ',
-                          style: TextStyle(color: Colors.blue[800]),
+                          style:
+                              TextStyle(color: Colors.white.withOpacity(0.6)),
                         ),
                         TextButton(
                           onPressed: () {
@@ -351,7 +345,8 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: Text(
                             _isLoginMode ? 'Sign Up' : 'Sign In',
-                            style: TextStyle(color: Colors.blue[800]),
+                            style:
+                                TextStyle(color: Colors.white.withOpacity(0.8)),
                           ),
                         ),
                       ],
