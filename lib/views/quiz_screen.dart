@@ -89,7 +89,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const Color bgColor3 = Color(0xFF5170FD);
+    const Color bgColor3 = Color(0xFF673AB7);
     const Color bgColor = Color(0xFF4993FA);
 
     return WillPopScope(

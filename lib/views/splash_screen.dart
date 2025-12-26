@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flashcards_quiz/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart'; // Import Lottie for the animation
+import 'package:lottie/lottie.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -12,43 +13,36 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _iconAnimation;
-  late Animation<double> _textAnimation;
+  late Animation<double> _titleFadeAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    // Initialize the animation controller for the fade effect
     _controller = AnimationController(
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
 
-    // Fade-in animation for the icon
     _iconAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
 
-    // Fade-in animation for the title text
-    _textAnimation = Tween<double>(begin: 0, end: 1).animate(
+    _titleFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
 
-    // Start the animation
     _controller.forward();
-
-    // Navigate to LoginPage after the animation completes
     _navigateToLoginPage();
   }
 
   void _navigateToLoginPage() {
-    Timer(Duration(seconds: 10), () {
+    // Keep enough time for: logo fade + title fade + typing animation
+    Timer(const Duration(seconds: 10), () {
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) =>
-              LoginPage(), // Navigate to LoginPage after the splash
-        ),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       );
     });
   }
@@ -56,33 +50,58 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple, // Background color
+      backgroundColor: Colors.deepPurple,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Lottie Animation for the splash screen logo
             FadeTransition(
               opacity: _iconAnimation,
               child: Lottie.asset(
-                'assets/Puzzle (3).json', // Path to your JSON animation
-                width: 150, // Width of the animation
-                height: 150, // Height of the animation
-                fit: BoxFit.fill, // Fit the animation inside the space
+                'assets/Puzzle (3).json',
+                width: 150,
+                height: 150,
+                fit: BoxFit.fill,
               ),
             ),
-            SizedBox(height: 20),
-            // Animated Text (fades in after the logo)
+            const SizedBox(height: 20),
+
+            // 1) Show "Riddly" first (fade in)
             FadeTransition(
-              opacity: _textAnimation,
-              child: Text(
-                'Think | Guess | Win', // App title
-                style: TextStyle(
-                  fontSize: 26,
-                  color: Colors.white.withOpacity(0.7),
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'EmilysCandy-Regular', 
-                ),
+              opacity: _titleFadeAnimation,
+              child: Column(
+                children: [
+                  Text(
+                    'Riddly',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 34,
+                      color: Colors.white.withOpacity(0.85),
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'EmilysCandy-Regular',
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // 2) Then show "Think . Guess . Win" in animated form
+                  AnimatedTextKit(
+                    isRepeatingAnimation: false,
+                    totalRepeatCount: 1,
+                    animatedTexts: [
+                      TypewriterAnimatedText(
+                        'Think . Guess . Win',
+                        speed: const Duration(milliseconds: 90),
+                        textStyle: TextStyle(
+                          fontSize: 22,
+                          color: Colors.white.withOpacity(0.70),
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'EmilysCandy-Regular',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],

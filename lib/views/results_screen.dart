@@ -13,7 +13,8 @@ class ResultsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color bgColor3 = Color(0xFF5170FD);
+    //const Color bgColor3 = Color(0xFF5170FD);
+    const Color bgColor3 = Color(0xFF673AB7);
     print(score);
     print(totalQuestions);
     final double percentageScore = (score / totalQuestions) * 100;
@@ -36,7 +37,7 @@ class ResultsScreen extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.close,
-                color: Colors.white,
+                color: Colors.white
               ),
             ),
           ],

@@ -7,8 +7,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color bgColor = Color(0xFF4993FA);
-    const Color bgColor3 = Color(0xFF5170FD);
+    // const Color bgColor = Color(0xFF4993FA);
+    final Color bgColor = Colors.white10.withOpacity(0.15);
+
+    //const Color bgColor3 = Color(0xFF5170FD);
+    const Color bgColor3 = Color(0xFF673AB7);
     return Scaffold(
       backgroundColor: bgColor3,
       body: SafeArea(
@@ -95,7 +98,7 @@ class HomePage extends StatelessWidget {
                     },
                     child: Card(
                       color: bgColor,
-                      elevation: 20,
+                      elevation: 40,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),

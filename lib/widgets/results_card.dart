@@ -48,7 +48,6 @@ class ResultsCard extends StatelessWidget {
                                     .copyWith(fontSize: 12 + ii.toDouble()),
                               ),
                             ],
-                            //m'adamfo(Twi) - my friend
                             TextSpan(
                               text: "  m'adamfo\n You Scored  \n",
                               style: Theme.of(context).textTheme.bodySmall,

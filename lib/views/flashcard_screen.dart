@@ -22,8 +22,10 @@ class _NewCardState extends State<NewCard> {
   @override
   Widget build(BuildContext context) {
     //const Color bgColor = Color(0xFF4993FA);
-    const Color bgColor3 = Color(0xFF5170FD);
-    const Color cardColor = Color(0xFF4993FA);
+    const Color bgColor3 = Color(0xFF673AB7);
+    //const Color cardColor = Color(0xFF4F7FD9);
+    const Color cardColor = Color(0xFF5A78C9);
+
 
     // Get a list of 4 randomly selected Questions objects
     Map<dynamic, dynamic> randomQuestionsMap =
@@ -117,6 +119,9 @@ class _NewCardState extends State<NewCard> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   ElevatedButton(
                     style: ButtonStyle(
