@@ -90,7 +90,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     const Color bgColor3 = Color(0xFF673AB7);
-    const Color bgColor = Color(0xFF4993FA);
+    const Color bgColor = Color(0xFF9575CD);
 
     return WillPopScope(
       onWillPop: () {
@@ -119,7 +119,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   ],
                 ),
                 const SizedBox(
-                  height: 10, 
+                  height: 10,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 14, bottom: 10),
@@ -196,7 +196,6 @@ class _QuizScreenState extends State<QuizScreen> {
 
                                 return Column(
                                   children: [
-                                  
                                     Text(
                                       myquestions.text,
                                       style: Theme.of(context)
@@ -325,15 +324,15 @@ class _QuizScreenState extends State<QuizScreen> {
 
   ElevatedButton buildElevatedButton() {
     //  const Color bgColor3 = Color(0xFF5170FD);
-    const Color cardColor = Color(0xFF4993FA);
+    const Color cardColor = Color(0xFF9575CD);
 
     return ElevatedButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(cardColor),
-        fixedSize: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(cardColor),
+        fixedSize: WidgetStateProperty.all(
           Size(MediaQuery.sizeOf(context).width * 0.80, 40),
         ),
-        elevation: MaterialStateProperty.all(4),
+        elevation: WidgetStateProperty.all(4),
       ),
       onPressed: () {
         if (_questionNumber < widget.questionlenght.length) {

@@ -60,7 +60,7 @@ class _MyProgressIndicatorState extends State<MyProgressIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    const Color bgColor = Color(0xFF4993FA);
+    const Color bgColor = Color(0xFF9575CD);
     return Expanded(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),

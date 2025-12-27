@@ -5,6 +5,8 @@ import 'package:lottie/lottie.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -37,11 +39,11 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _navigateToLoginPage() {
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 4), () {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     });
   }

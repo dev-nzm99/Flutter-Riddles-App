@@ -13,7 +13,7 @@ class ResultsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color bgColor3 = Color(0xFF5170FD);
+    const Color bgColor3 = Color(0xFF9575CD);
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.888,
       height: MediaQuery.of(context).size.height * 0.568,
@@ -38,7 +38,7 @@ class ResultsCard extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             for (var ii = 0;
-                                ii < "Congratulations!,".length;
+                                ii < "Congratulations!".length;
                                 ii++) ...[
                               TextSpan(
                                 text: "Congratulations!,"[ii],
@@ -49,7 +49,7 @@ class ResultsCard extends StatelessWidget {
                               ),
                             ],
                             TextSpan(
-                              text: "  m'adamfo\n You Scored  \n",
+                              text: " \nYou Scored  \n",
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                             TextSpan(

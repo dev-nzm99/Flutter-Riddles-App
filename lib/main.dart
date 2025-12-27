@@ -1,6 +1,5 @@
 import 'package:flashcards_quiz/login_screen.dart';
 import 'package:flashcards_quiz/views/home_screen.dart';
-import 'package:flashcards_quiz/views/intro_screen.dart';
 import 'package:flashcards_quiz/views/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,12 +22,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Set IntroScreen as the first screen
-      home: SplashScreen(),
+      home: const SplashScreen(),
       routes: {
         // Define the route for HomePage after login or splash
-        '/splash_screen': (context) => SplashScreen(),
+        '/splash_screen': (context) => const SplashScreen(),
         '/home': (context) => const HomePage(),
-        '/login': (context) => LoginPage(),
+        '/login': (context) => const LoginPage(),
       },
     );
   }

@@ -19,7 +19,7 @@ class ResultsScreen extends StatelessWidget {
     print(totalQuestions);
     final double percentageScore = (score / totalQuestions) * 100;
     final int roundedPercentageScore = percentageScore.round();
-    const Color cardColor = Color(0xFF4993FA);
+    const Color cardColor = Color(0xFF9575CD);
     return WillPopScope(
       onWillPop: () {
         Navigator.popUntil(context, (route) => route.isFirst);
@@ -92,11 +92,11 @@ class ResultsScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(cardColor),
-                  fixedSize: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(cardColor),
+                  fixedSize: WidgetStateProperty.all(
                     Size(MediaQuery.sizeOf(context).width * 0.80, 40),
                   ),
-                  elevation: MaterialStateProperty.all(4),
+                  elevation: WidgetStateProperty.all(4),
                 ),
                 onPressed: () {
                   Navigator.popUntil(context, (route) => route.isFirst);

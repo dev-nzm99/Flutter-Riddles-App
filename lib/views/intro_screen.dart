@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'splash_screen.dart'; // Import the SplashScreen
 
 class IntroScreen extends StatefulWidget {
+  const IntroScreen({super.key});
+
   @override
   _IntroScreenState createState() => _IntroScreenState();
 }
@@ -35,12 +37,12 @@ class _IntroScreenState extends State<IntroScreen>
   }
 
   void _navigateToSplashScreen() {
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) =>
-              SplashScreen(), // Navigate to SplashScreen after message
+              const SplashScreen(), // Navigate to SplashScreen after message
         ),
       );
     });

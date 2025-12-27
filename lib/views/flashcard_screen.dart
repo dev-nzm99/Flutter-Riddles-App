@@ -24,9 +24,8 @@ class _NewCardState extends State<NewCard> {
     //const Color bgColor = Color(0xFF4993FA);
     const Color bgColor3 = Color(0xFF673AB7);
     //const Color cardColor = Color(0xFF4F7FD9);
-    const Color cardColor = Color(0xFF5A78C9);
-
-
+    //const Color cardColor = Color(0xFF5A78C9);
+    const Color cardColor = Color(0xFF7E57C2);
     // Get a list of 4 randomly selected Questions objects
     Map<dynamic, dynamic> randomQuestionsMap =
         getRandomQuestionsAndOptions(widget.typeOfTopic, 4);
@@ -104,11 +103,11 @@ class _NewCardState extends State<NewCard> {
                 children: [
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(cardColor),
-                      fixedSize: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(cardColor),
+                      fixedSize: WidgetStateProperty.all(
                         Size(MediaQuery.of(context).size.width * 0.85, 30),
                       ),
-                      elevation: MaterialStateProperty.all(4),
+                      elevation: WidgetStateProperty.all(4),
                     ),
                     onPressed: () => controller.unswipe(),
                     child: const Text(
@@ -125,11 +124,11 @@ class _NewCardState extends State<NewCard> {
                   ),
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(cardColor),
-                      fixedSize: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(cardColor),
+                      fixedSize: WidgetStateProperty.all(
                         Size(MediaQuery.sizeOf(context).width * 0.85, 30),
                       ),
-                      elevation: MaterialStateProperty.all(4),
+                      elevation: WidgetStateProperty.all(4),
                     ),
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
