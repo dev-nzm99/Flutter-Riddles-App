@@ -42,6 +42,7 @@ dependencies:
   lottie: ^3.3.2
   animated_splash_screen: ^1.3.0
   animated_text_kit: ^4.2.2
+  supabase_flutter: ^2.12.0 # Supabase package for Flutter
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +90,13 @@ flutter:
     - family: EmilysCandy-Regular
       fonts:
         - asset: assets/fonts/EmilysCandy-Regular.ttf
+
+    - family: VastShadow-Regular
+      fonts:
+        - asset: assets/fonts/VastShadow-Regular.ttf
+    - family: BerkshireSwash-Regular
+      fonts:
+        - asset: assets/fonts/BerkshireSwash-Regular.ttf
         # Uncomment this line if you want to use italic style
         # style: italic
 

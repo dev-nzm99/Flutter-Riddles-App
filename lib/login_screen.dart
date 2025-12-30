@@ -1,7 +1,7 @@
 import 'package:flashcards_quiz/views/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,10 +11,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Secure storage instance
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-
+  
   // Controllers
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -25,8 +25,11 @@ class _LoginPageState extends State<LoginPage> {
   bool _loading = false;
   String _errorMessage = '';
 
+  final supabase = Supabase.instance.client;
+
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -42,6 +45,11 @@ class _LoginPageState extends State<LoginPage> {
     return e.isNotEmpty && e.contains('@') && e.contains('.');
   }
 
+  // Placeholder for forgot password logic
+  void _forgotPassword() {
+    // Implement password recovery logic here
+  }
+
   Future<void> _signUp() async {
     setState(() {
       _errorMessage = '';
@@ -51,35 +59,41 @@ class _LoginPageState extends State<LoginPage> {
     final email = _emailController.text.trim().toLowerCase();
     final pass = _passwordController.text;
     final confirm = _confirmPasswordController.text;
+    final username = _usernameController.text.trim();
 
     try {
-      if (!_isValidEmail(email)) {
-        throw 'Please enter a valid email.';
-      }
-      if (pass.length < 6) {
-        throw 'Password must be at least 6 characters.';
-      }
-      if (pass != confirm) {
-        throw 'Passwords do not match.';
-      }
+      if (username.isEmpty) throw 'Username is required.';
+      if (!_isValidEmail(email)) throw 'Please enter a valid email.';
+      if (pass.length < 6) throw 'Password must be at least 6 characters.';
+      if (pass != confirm) throw 'Passwords do not match.';
 
-      // Save signup credentials (demo/learning use)
-      await _storage.write(key: 'signupEmail', value: email);
-      await _storage.write(key: 'signupPassword', value: pass);
+      await supabase.auth.signUp(
+        email: email,
+        password: pass,
+        data: {'display_name': username},
+      );
 
-      // After signup, switch to login mode
-      setState(() {
-        _isLoginMode = true;
+      // Note: Ensure your 'users' table has 'username', 'email', and 'password' columns
+      // If your 'password' column is 'NOT NULL', you must include it here.
+      await supabase.from('users').insert({
+        'username': username,
+        'email': email,
+        'password': pass, 
       });
 
       if (!mounted) return;
+      setState(() => _isLoginMode = true);
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Account created. Please log in.')),
+        const SnackBar(
+            content: Text('Account created. Please confirm your email.')),
       );
-    } catch (e) {
-      setState(() => _errorMessage = e.toString());
+    } on AuthException catch (error) {
+      setState(() => _errorMessage = error.message);
+    } catch (error) {
+      setState(() => _errorMessage = error.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -93,69 +107,35 @@ class _LoginPageState extends State<LoginPage> {
     final pass = _passwordController.text;
 
     try {
-      if (!_isValidEmail(email)) {
-        throw 'Please enter a valid email.';
-      }
-      if (pass.isEmpty) {
-        throw 'Password is required.';
-      }
+      if (!_isValidEmail(email)) throw 'Please enter a valid email.';
+      if (pass.isEmpty) throw 'Password is required.';
 
-      final savedEmail = await _storage.read(key: 'signupEmail');
-      final savedPass = await _storage.read(key: 'signupPassword');
+      await supabase.auth.signInWithPassword(email: email, password: pass);
 
-      if (savedEmail == null || savedPass == null) {
-        throw 'No account found. Please Sign Up first.';
-      }
+      final userData = await supabase
+          .from('users')
+          .select('username')
+          .eq('email', email)
+          .maybeSingle();
 
-      if (email != savedEmail || pass != savedPass) {
-        throw 'Invalid email or password.';
-      }
+      final username = userData?['username'] ?? 'User';
 
-      // Persist login session
       await _storage.write(key: 'isLoggedIn', value: 'true');
       await _storage.write(key: 'currentEmail', value: email);
+      await _storage.write(key: 'currentUsername', value: username);
 
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
+        MaterialPageRoute(builder: (_) => HomePage(username: username)),
       );
+    } on AuthException catch (error) {
+      setState(() => _errorMessage = error.message);
     } catch (e) {
-      setState(() => _errorMessage = e.toString());
+      setState(() => _errorMessage = 'An unexpected error occurred.');
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
-  }
-
-  Future<void> _forgotPassword() async {
-    // Offline demo:
-    // show saved password only for demonstration (NOT recommended in real apps).
-    final savedEmail = await _storage.read(key: 'signupEmail');
-    final savedPass = await _storage.read(key: 'signupPassword');
-
-    if (!mounted) return;
-
-    if (savedEmail == null || savedPass == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('No saved account found. Please Sign Up.')),
-      );
-      return;
-    }
-
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Demo: Saved Credentials'),
-        content: Text('Email: $savedEmail\nPassword: $savedPass'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -179,90 +159,84 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(20.0),
             child: Align(
               alignment: Alignment.center,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.13),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(20.0),
-                width: double.infinity,
-                constraints: const BoxConstraints(
-                  maxWidth: 500,
-                  // allow enough height for signup + error text
-                  maxHeight: 560,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Title
-                    Text(
-                      _isLoginMode
-                          ? 'Login with your Account'
-                          : 'Create an Account',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                          color: Colors.white.withOpacity(0.8)
+              child: SingleChildScrollView(
+                // Added to allow scrolling for the extra field
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.13),
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Email Text Field
-                    TextField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        hintText: 'example@gmail.com',
-                        prefixIcon: Icon(Icons.email, color: Colors.blue[800]),
-                        fillColor: Colors.white,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(20.0),
+                  width: double.infinity,
+                  constraints: const BoxConstraints(
+                    maxWidth: 500,
+                    // Increased maxHeight to accommodate the new Username field
+                    maxHeight: 650,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Title
+                      Text(
+                        _isLoginMode
+                            ? 'Login with your Account'
+                            : 'Create an Account',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white.withOpacity(0.8)),
                       ),
-                    ),
-                    const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                    // Password Text Field
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock, color: Colors.blue[800]),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.blue[800],
+                      // Username Text Field (Only in Sign Up Mode)
+                      if (!_isLoginMode) ...[
+                        TextField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            hintText: 'Username',
+                            prefixIcon:
+                                Icon(Icons.person, color: Colors.blue[800]),
+                            fillColor: Colors.white,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
-                          onPressed: _togglePasswordVisibility,
                         ),
-                        fillColor: Colors.white,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                        const SizedBox(height: 20),
+                      ],
+
+                      // Email Text Field
+                      TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText: 'example@gmail.com',
+                          prefixIcon:
+                              Icon(Icons.email, color: Colors.blue[800]),
+                          fillColor: Colors.white,
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 20),
 
-                    // Confirm Password Text Field for Sign Up Mode
-                    if (!_isLoginMode)
+                      // Password Text Field
                       TextField(
-                        controller: _confirmPasswordController,
+                        controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
-                          hintText: 'Confirm Password',
+                          hintText: 'Password',
                           prefixIcon: Icon(Icons.lock, color: Colors.blue[800]),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -280,88 +254,110 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 10),
 
-                    const SizedBox(height: 10),
-
-                    // Forgot Password link (only in login mode)
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: _isLoginMode ? _forgotPassword : null,
-                        child: Text(
-                          'Forgot Password?',
-                          style:
-                              TextStyle(color: Colors.white.withOpacity(0.8)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Sign In / Sign Up Button
-                    ElevatedButton(
-                      onPressed:
-                          _loading ? null : (_isLoginMode ? _login : _signUp),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 100,
-                          vertical: 15,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: _loading
-                          ? const SizedBox(
-                              height: 18,
-                              width: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(
-                              _isLoginMode ? 'Sign In' : 'Sign Up',
-                              style: const TextStyle(fontSize: 18),
+                      // Confirm Password Text Field for Sign Up Mode
+                      if (!_isLoginMode) ...[
+                        TextField(
+                          controller: _confirmPasswordController,
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            hintText: 'Confirm Password',
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.blue[800]),
+                            fillColor: Colors.white,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Toggle Login/Signup
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          _isLoginMode
-                              ? 'Don\'t have an account? '
-                              : 'Already have an account? ',
-                          style:
-                              TextStyle(color: Colors.white.withOpacity(0.6)),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _isLoginMode = !_isLoginMode;
-                              _errorMessage = '';
-                              // optional: clear confirm field when switching
-                              _confirmPasswordController.clear();
-                            });
-                          },
-                          child: Text(
-                            _isLoginMode ? 'Sign Up' : 'Sign In',
-                            style:
-                                TextStyle(color: Colors.white.withOpacity(0.8)),
                           ),
                         ),
+                        const SizedBox(height: 10),
                       ],
-                    ),
 
-                    if (_errorMessage.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          _errorMessage,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.red),
+                      // Forgot Password link (only in login mode)
+                      if (_isLoginMode)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: _forgotPassword,
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8)),
+                            ),
+                          ),
                         ),
+                      
+                      const SizedBox(height: 20),
+
+                      // Sign In / Sign Up Button
+                      ElevatedButton(
+                        onPressed:
+                            _loading ? null : (_isLoginMode ? _login : _signUp),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal:
+                                80, // Slightly reduced to fit text better
+                            vertical: 15,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: _loading
+                            ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Text(
+                                _isLoginMode ? 'Sign In' : 'Sign Up',
+                                style: const TextStyle(fontSize: 18),
+                              ),
                       ),
-                  ],
+                      const SizedBox(height: 20),
+
+                      // Toggle Login/Signup
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _isLoginMode
+                                ? 'Don\'t have an account? '
+                                : 'Already have an account? ',
+                            style:
+                                TextStyle(color: Colors.white.withOpacity(0.6)),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _isLoginMode = !_isLoginMode;
+                                _errorMessage = '';
+                                _confirmPasswordController.clear();
+                              });
+                            },
+                            child: Text(
+                              _isLoginMode ? 'Sign Up' : 'Sign In',
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_errorMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            _errorMessage,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.red, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
