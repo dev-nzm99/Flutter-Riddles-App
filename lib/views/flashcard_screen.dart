@@ -23,9 +23,8 @@ class _NewCardState extends State<NewCard> {
   Widget build(BuildContext context) {
     //const Color bgColor = Color(0xFF4993FA);
     const Color bgColor3 = Color(0xFF673AB7);
-    //const Color cardColor = Color(0xFF4F7FD9);
-    //const Color cardColor = Color(0xFF5A78C9);
     const Color cardColor = Color(0xFF7E57C2);
+
     // Get a list of 4 randomly selected Questions objects
     Map<dynamic, dynamic> randomQuestionsMap =
         getRandomQuestionsAndOptions(widget.typeOfTopic, 4);
