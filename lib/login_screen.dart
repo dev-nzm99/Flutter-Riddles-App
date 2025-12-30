@@ -119,7 +119,6 @@ class _LoginPageState extends State<LoginPage> {
           .maybeSingle();
 
       final username = userData?['username'] ?? 'User';
-
       await _storage.write(key: 'isLoggedIn', value: 'true');
       await _storage.write(key: 'currentEmail', value: email);
       await _storage.write(key: 'currentUsername', value: username);

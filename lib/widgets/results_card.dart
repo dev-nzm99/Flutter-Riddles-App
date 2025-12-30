@@ -1,5 +1,6 @@
 import 'package:flashcards_quiz/widgets/dotted_lines.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Ensure this is imported
 
 class ResultsCard extends StatelessWidget {
   const ResultsCard({
@@ -11,6 +12,23 @@ class ResultsCard extends StatelessWidget {
   final int roundedPercentageScore;
   final Color bgColor3;
 
+  // Added fetchUsername method directly inside the class
+  Future<String> fetchUsername() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return "Guest";
+
+    try {
+      final data = await Supabase.instance.client
+          .from('users')
+          .select('username')
+          .eq('email', user.email as Object)
+          .maybeSingle();
+
+      return data?['username'] ?? "User";
+    } catch (e) {
+      return "User";
+    }
+  }
   @override
   Widget build(BuildContext context) {
     const Color bgColor3 = Color(0xFF9575CD);
@@ -33,36 +51,59 @@ class ResultsCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Center(
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: [
-                            for (var ii = 0;
-                                ii < "Congratulations!".length;
-                                ii++) ...[
-                              TextSpan(
-                                text: "Congratulations!,"[ii],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(fontSize: 12 + ii.toDouble()),
-                              ),
-                            ],
-                            TextSpan(
-                              text: " \nYou Scored  \n",
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            TextSpan(
-                              text: "$roundedPercentageScore%",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    fontSize: 30,
+                      // Wrap RichText with FutureBuilder to handle the async username
+                      child: FutureBuilder<String>(
+                        future: fetchUsername(),
+                        builder: (context, snapshot) {
+                          String name = snapshot.data ?? "...";
+
+                          return RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              children: [
+                                for (var ii = 0;
+                                    ii < "Congratulations!".length;
+                                    ii++) ...[
+                                  TextSpan(
+                                    text: "Congratulations!"[ii],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontSize: 13 + ii.toDouble(),
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF673AB7),
+                                        ),
                                   ),
+                                ],
+                                // Displaying the fetched Username
+                                TextSpan(
+                                  text: " ${name.split(' ')[0]}\n",
+                                  style: const TextStyle(
+                                    fontFamily: 'VastShadow-Regular',
+                                    fontSize: 22,
+                                    color: Color(0xFF673AB7),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "You Scored \n",
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                TextSpan(
+                                  text: "$roundedPercentageScore%",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -118,6 +159,7 @@ class ResultsCard extends StatelessWidget {
               ),
             ),
           ),
+          // Side Cut-out circles
           Positioned(
             left: -10,
             top: MediaQuery.of(context).size.height * 0.178,
