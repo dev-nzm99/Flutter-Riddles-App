@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  
+
   // Controllers
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
       await supabase.from('users').insert({
         'username': username,
         'email': email,
-        'password': pass, 
+        'password': pass,
       });
 
       if (!mounted) return;
@@ -287,7 +287,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-                      
+
                       const SizedBox(height: 20),
 
                       // Sign In / Sign Up Button

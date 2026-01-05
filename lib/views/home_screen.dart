@@ -4,12 +4,18 @@ import 'package:flashcards_quiz/views/flashcard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Added for logout logic
 
-class HomePage extends StatelessWidget {
-  // 1. Properly declare the username field
+class HomePage extends StatefulWidget {
   final String username;
 
-  // 2. Update the constructor to require the username
   const HomePage({super.key, required this.username});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // Track hover state for each grid item
+  final Map<int, bool> _hoverStates = {};
 
   Future<void> _handleLogout(BuildContext context) async {
     final bool? confirm = await showDialog<bool>(
@@ -37,7 +43,7 @@ class HomePage extends StatelessWidget {
     await Supabase.instance.client.auth.signOut();
 
     if (!context.mounted) return;
-    
+
     // Return to login screen
     Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
   }
@@ -54,30 +60,14 @@ class HomePage extends StatelessWidget {
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
-        title: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: "Flutter ",
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      fontSize: 21,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'BerkshireSwash-Regular', // Added here
-                    ),
-              ),
-              for (var i = 0; i < "Riddles".length; i++) ...[
-                TextSpan(
-                  text: "Riddles"[i],
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        fontSize: 21 + i.toDouble(),
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'BerkshireSwash-Regular', // Added here
-                      ),
-                ),
-              ]
-            ],
+        title: Text(
+          "Flutter Riddles",
+          style: TextStyle(
+            // Corrected here by wrapping properties in TextStyle
+            fontSize: 21,
+            color: Colors.white,
+            fontWeight: FontWeight.w400,
+            fontFamily: 'BerkshireSwash-Regular', // Added here
           ),
         ),
         actions: [
@@ -88,6 +78,7 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+
       backgroundColor: bgColor3,
       body: SafeArea(
         child: Padding(
@@ -116,22 +107,18 @@ class HomePage extends StatelessWidget {
                   height: 40,
                   child: DefaultTextStyle(
                     style: const TextStyle(
-                      fontSize:
-                          22, // Slightly smaller to ensure "Great to see you..." fits
-                      //fontWeight: FontWeight.bold,
+                      fontSize: 22,
                       color: Colors.white,
                       fontFamily: 'VastShadow-Regular',
                     ),
                     child: Center(
                       child: AnimatedTextKit(
-                        // 1. Set repeat count to repeat forever
                         repeatForever: true,
-                        // 2. Enable repeating
                         isRepeatingAnimation: true,
                         pause: const Duration(milliseconds: 3000),
                         animatedTexts: [
                           TypewriterAnimatedText(
-                            "Great to see you, ${username.split(' ')[0]}!",
+                            "Great to see you, ${widget.username.split(' ')[0]}!",
                             speed: const Duration(milliseconds: 100),
                             textAlign: TextAlign.center,
                           ),
@@ -172,35 +159,62 @@ class HomePage extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Card(
-                      color: cardBg,
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              topicsData.topicIcon,
-                              color: Colors.white,
-                              size: 55,
+                    child: MouseRegion(
+                      onEnter: (_) {
+                        setState(() {
+                          _hoverStates[index] =
+                              true; // Set hover state for the current item
+                        });
+                      },
+                      onExit: (_) {
+                        setState(() {
+                          _hoverStates[index] =
+                              false; // Reset hover state for the current item
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        decoration: BoxDecoration(
+                          color: _hoverStates[index] == true
+                              ? const Color(0xFF7E57C2) //Colors.blue.shade300
+                              : Colors.white70
+                                  .withOpacity(0.25), // Hover color change
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _hoverStates[index] == true
+                                  ? Colors.black26
+                                  : Colors.transparent,
+                              blurRadius: _hoverStates[index] == true ? 8 : 4,
+                              spreadRadius: _hoverStates[index] == true ? 4 : 2,
                             ),
-                            const SizedBox(height: 15),
-                            Text(
-                              topicsData.topicName,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall!
-                                  .copyWith(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                            )
                           ],
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                topicsData.topicIcon,
+                                color: Colors.white,
+                                size: 55,
+                              ),
+                              const SizedBox(height: 15),
+                              Text(
+                                topicsData.topicName,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),

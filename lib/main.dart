@@ -14,7 +14,7 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdta2JocmVzamd2b29xY2t1dWlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwNTgwMjUsImV4cCI6MjA4MjYzNDAyNX0.WDhSdOR1zyIXnlGHtjO8leWBGjl8x8uC4dVgffRpQo8',
   );
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

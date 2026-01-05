@@ -1,3 +1,4 @@
+import 'package:flashcards_quiz/views/home_screen.dart';
 import 'package:flashcards_quiz/widgets/dotted_lines.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Ensure this is imported
@@ -8,7 +9,6 @@ class ResultsCard extends StatelessWidget {
     required this.roundedPercentageScore,
     required this.bgColor3,
   });
-
   final int roundedPercentageScore;
   final Color bgColor3;
 
@@ -29,6 +29,7 @@ class ResultsCard extends StatelessWidget {
       return "User";
     }
   }
+
   @override
   Widget build(BuildContext context) {
     const Color bgColor3 = Color(0xFF9575CD);
@@ -72,7 +73,7 @@ class ResultsCard extends StatelessWidget {
                                         .copyWith(
                                           fontSize: 13 + ii.toDouble(),
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF673AB7),
+                                          color: const Color(0xFF673AB7),
                                         ),
                                   ),
                                 ],
