@@ -177,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                   constraints: const BoxConstraints(
                     maxWidth: 500,
                     // Increased maxHeight to accommodate the new Username field
-                    maxHeight: 650,
+                    maxHeight: 600,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

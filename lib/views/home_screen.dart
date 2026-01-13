@@ -63,11 +63,10 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           "Flutter Riddles",
           style: TextStyle(
-            // Corrected here by wrapping properties in TextStyle
             fontSize: 21,
             color: Colors.white,
             fontWeight: FontWeight.w400,
-            fontFamily: 'BerkshireSwash-Regular', // Added here
+            fontFamily: 'BerkshireSwash-Regular', 
           ),
         ),
         actions: [

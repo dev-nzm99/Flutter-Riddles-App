@@ -31,10 +31,9 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      // Set IntroScreen as the first screen
+      // Set splash screen as the first screen
       home: const SplashScreen(),
       routes: {
-        // Define the route for HomePage after login or splash
         '/splash_screen': (context) => const SplashScreen(),
         '/home': (context) => const HomePage(
               username: '',
