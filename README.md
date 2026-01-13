@@ -27,7 +27,7 @@ Welcome to Flutter Riddles, a quiz app built with Flutter to help you deepen you
 To get started with **Flutter Riddles**, clone the repository and open it in your preferred IDE. Make sure you have Flutter installed on your system.
 
 ```bash
-git clone https://github.com/your-repo-url/flutter-riddles.git
+git clone https://github.com/your-repo-url/Riddly.git
 cd flutter-riddles
 flutter pub get
 flutter run
