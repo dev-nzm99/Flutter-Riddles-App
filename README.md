@@ -12,9 +12,15 @@ Introducing a fun and interactive quiz app built with Flutter! **Flutter Riddles
 
 ## Screenshots
 
-![Flutter Riddles](https://raw.githubusercontent.com/your-repo-url/image1.png)
-![Quiz Question](https://raw.githubusercontent.com/your-repo-url/image2.png)
-![Quiz Results](https://raw.githubusercontent.com/your-repo-url/image3.png)
+<div align="center">
+  <img src="https://github.com/dev-nzm99/Flutter-Riddles-App/blob/main/screenshots/1.png" width="22%"/>
+  <img src="https://github.com/dev-nzm99/Flutter-Riddles-App/blob/main/screenshots/2.png" width="22%"/>
+  <img src="https://github.com/dev-nzm99/Flutter-Riddles-App/blob/main/screenshots/3.png" width="22%"/>
+  <img src="https://github.com/dev-nzm99/Flutter-Riddles-App/blob/main/screenshots/4.png" width="22%"/>
+  <img src="https://github.com/dev-nzm99/Flutter-Riddles-App/blob/main/screenshots/5.png" width="22%"/>
+  <img src="https://github.com/dev-nzm99/Flutter-Riddles-App/blob/main/screenshots/6.png" width="22%"/>
+  <img src="https://github.com/dev-nzm99/Flutter-Riddles-App/blob/main/screenshots/7.png" width="22%"/>
+</div>
 
 ## Installation
 
