@@ -1,6 +1,6 @@
 # Flutter Riddles
 
-Welcome to Flutter Riddles, a quiz app built with Flutter to help you deepen your understanding of Flutter essentials like widgets, state management, navigation, routing, layouts, and UI. Learn effectively with flashcards and test your knowledge with interactive quizzes. Developed in a week, this app is a great tool for developers looking to boost their Flutter expertise. There's always room for future code improvements.
+Welcome to Flutter Riddles, a quiz app built with Flutter to help you deepen your understanding of Flutter essentials like widgets, state management, navigation, routing, layouts, and UI. Learn effectively with flashcards and test your knowledge with interactive quizzes. This app is a great tool for developers looking to boost their Flutter expertise. There's always room for future code improvements.
 
 ## Features
 - **Flashcards** for quick learning
